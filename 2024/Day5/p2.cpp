@@ -17,7 +17,7 @@ int main() {
     if (line == "") {
       break;
     }
-    std::cout << line << std::endl;
+    // std::cout << line << std::endl;
 
     int pos = line.find('|');
 
@@ -39,13 +39,13 @@ int main() {
       }
     }
 
-    std::cout << leftElem << " [" << oss.str() << ']' << std::endl;
+    // std::cout << leftElem << " [" << oss.str() << ']' << std::endl;
   }
 
   // Data
   while (getline(file, line)) {
     std::vector<int> pages;
-    std::cout << "-----------" << std::endl;
+    // std::cout << "-----------" << std::endl;
     std::string num;
     std::istringstream lineStream{line};
     while (getline(lineStream, num, ',')) {
@@ -55,7 +55,7 @@ int main() {
     for (int i = 0; i < (int)pages.size(); i++) {
       // std::cout << "Page: " << pages[i] << " Checked: ";
       std::vector<int> rule;
-      std::cout << pages[i] << " contains: " << std::endl;
+      // std::cout << pages[i] << " contains: " << std::endl;
 
       if (rules.find(pages[i]) != rules.end()) {
         rule = rules[pages[i]];
@@ -71,21 +71,57 @@ int main() {
       for (int j = i + 1; j < (int)pages.size(); j++) {
         auto it = std::find(rule.begin(), rule.end(), pages[j]);
         if (it != rule.end()) {
-          std::cout << pages[j] << " ";
+          // std::cout << pages[j] << " ";
           in++;
         }
         out++;
       }
-      std::cout << "i: " << in << " a: " << out << std::endl;
+      // std::cout << "i: " << in << " a: " << out << std::endl;
       if (in != out) {
         accept = false;
         break;
       }
-      std::cout << std::endl;
+      // std::cout << std::endl;
     }
-    if (accept) {
+    if (!accept) {
+      std::cout << std::endl;
+      std::ostringstream oss;
+      for (int page : pages) {
+        oss << page << ' ';
+      }
+      std::cout << oss.str() << std::endl;
+      for (int j = 0; j < (int)pages.size() - 1; j++) {
+        auto rule = rules[pages[j]];
+        std::cout << pages[j] << ": ";
+
+        bool swapped = false;  // This flag will check if any swap happened
+
+        for (int i = j + 1; i < (int)pages.size(); i++) {
+          auto it = std::find(rule.begin(), rule.end(), pages[i]);
+          if (it != rule.end()) {
+            std::cout << pages[i] << " ";
+          } else {
+            std::cout << pages[i] << "! ";
+            std::cout << "swap: " << pages[j] << " and " << pages[i] << " ";
+            std::swap(pages[j], pages[i]);
+            swapped = true;  // Mark that a swap happened
+          }
+        }
+
+        if (swapped) {
+          j--;  // Decrement j to check the current element again in the next
+                // outer loop iteration
+        }
+        std::cout << std::endl;
+      }
+
       result += pages[pages.size() / 2];
-      std::cout << pages[pages.size() / 2] << std::endl;
+
+      std::ostringstream oss2;
+      for (int page : pages) {
+        oss2 << page << ' ';
+      }
+      std::cout << oss2.str() << std::endl;
     }
     // std::cout << std::endl;
   }
